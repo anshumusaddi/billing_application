@@ -1,16 +1,17 @@
 package routes
 
 import (
-	"github.com/anshumusaddi/billing_application"
+	"github.com/anshumusaddi/billing_application/billing_event"
 	"github.com/gin-gonic/gin"
 )
 
-func InitRoutes() {
+func InitRoutes() *gin.Engine {
 	router := gin.Default()
 	baseRouter := router.Group("billing_application/api/v1")
 
 	billingEvent := baseRouter.Group("billing/event")
 
-	billingEvent.GET("/", func(c *gin.Context) { getBillingEvent(c) })
+	billingEvent.GET("/", func(c *gin.Context) { billing_event.GetBillingEvent(c) })
 
+	return router
 }

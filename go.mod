@@ -1,4 +1,4 @@
-module billing_application
+module github.com/anshumusaddi/billing_application
 
 go 1.19
 
