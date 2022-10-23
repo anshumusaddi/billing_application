@@ -1,9 +1,13 @@
 package main
 
-import "github.com/anshumusaddi/billing_application/routes"
+import (
+	"github.com/anshumusaddi/billing_application/models"
+	"github.com/anshumusaddi/billing_application/routes"
+)
 
 func main() {
-	engine := routes.InitRoutes()
+	var events []models.MessageEvent
+	engine := routes.InitRoutes(&events)
 	err := engine.Run(":8080")
 	if err != nil {
 		return
