@@ -2,6 +2,7 @@
 DB:
   Host: localhost
   Port: 27017
+  Name: billing_application
 
 LOG:
   Level: debug

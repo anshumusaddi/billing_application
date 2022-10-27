@@ -1,5 +1,7 @@
 package helper
 
+import "fmt"
+
 type APIError struct {
 	Status  int    `json:"status"`
 	Code    string `json:"err_code"`
@@ -18,4 +20,17 @@ func NewAPIError(status int, code string, title, message string) *APIError {
 
 var (
 	ErrInvalidRequestPayloadParams = NewAPIError(400, "BA1001", "E_BAD_REQUEST", "invalid payload in request, check if payload data types are correct")
+	ErrDBInsert                    = NewAPIError(500, "BA1002", "E_DB_INSERT", "error while inserting the document in the database")
+	ErrDuplicateKey                = NewAPIError(400, "BA1003", "E_DB_OPERATION", "key already exists, check if key is already present")
+	ErrInvalidQueryParams          = NewAPIError(400, "BA1004", "E_BAD_REQUEST", "invalid query params")
+	ErrDBOperation                 = NewAPIError(500, "BA1005", "E_DB_OPERATION", "failed to execute the query in database")
 )
+
+func ApiErrorWithCustomMessage(apiErr *APIError, message string) *APIError {
+	apiErr.Message = message
+	return apiErr
+}
+
+func (err APIError) Error() string {
+	return fmt.Sprintf("[%s]: %s", err.Title, err.Message)
+}
