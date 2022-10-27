@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/anshumusaddi/billing_application/billing_event"
+	"github.com/anshumusaddi/billing_application/billing_summary"
 	"github.com/anshumusaddi/billing_application/datastore"
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +15,10 @@ func InitRoutes(store *datastore.BillingApplicationDBStore) *gin.Engine {
 
 	messageEvent.GET("/", func(c *gin.Context) { billing_event.GetBillingEvent(c, store) })
 	messageEvent.POST("/", func(c *gin.Context) { billing_event.PostBillingEvent(c, store) })
+
+	messageSummary := baseRouter.Group("message/summary")
+
+	messageSummary.GET("/", func(c *gin.Context) { billing_summary.GetBillingSummary(c, store) })
 
 	return router
 }
