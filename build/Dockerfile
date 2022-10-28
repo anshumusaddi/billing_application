@@ -22,7 +22,7 @@ RUN GIT_VERSION=$(git --no-pager log -1 --pretty=format:%H)
 RUN GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 RUN --mount=type=ssh,id=github GO111MODULE=on CGO_ENABLED=0 go build -o ${SVC} -ldflags "-X main.GitBranch=${GIT_BRANCH} -X main.GitVersion=${GIT_VERSION}" ./cmd
 
-FROM golang:1.19.2-alpine
+FROM golang:1.19.2-alpine as executor
 LABEL maintainer="anshumusaddi@gmail.com"
 
 ENV HOME=/app
