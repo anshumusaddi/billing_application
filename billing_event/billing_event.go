@@ -18,13 +18,13 @@ func GetBillingEvent(ctx *gin.Context, store *datastore.BillingApplicationDBStor
 	queryParams := helper.GetMapFromQueryParams(ctx.Request.URL.Query())
 	query, apiErr := helper.GetBsonFromQuery(queryParams, billingEventQueryMap)
 	if apiErr != nil {
-		logger.Error("Error parsing query params, err: %s", apiErr.Error())
+		logger.Error("error parsing query params, err: %s", apiErr.Error())
 		helper.WriteErrorResponse(ctx, apiErr)
 		return
 	}
 	err := store.Find(datastore.MessagingEventCollection, &messagingEvents, query)
 	if err != nil {
-		logger.Error("Error loading content config from database, err: %s", err.Error())
+		logger.Error("error loading messaging events from database, err: %s", err.Error())
 		helper.WriteErrorResponse(ctx, helper.ApiErrorWithCustomMessage(helper.ErrDBOperation, err.Error()))
 		return
 	}
@@ -39,24 +39,24 @@ func PostBillingEvent(ctx *gin.Context, store *datastore.BillingApplicationDBSto
 		helper.WriteErrorResponse(ctx, helper.ErrInvalidRequestPayloadParams)
 		return
 	}
-	if messageEvent.CustomerID == nil || messageEvent.Size == nil {
+	if messageEvent.CustomerID == "" || messageEvent.Size == 0 {
 		err = errors.New("mandatory fields not present in input")
 		logger.Error("error parsing request body, err: %s", err.Error())
 		helper.WriteErrorResponse(ctx, helper.ErrInvalidRequestPayloadParams)
 		return
 	}
-	messageEvent.ID = helper.ObjectIDAddr(primitive.NewObjectID())
+	messageEvent.ID = primitive.NewObjectID()
 	timeStamp := time.Now()
 	messageEvent.CreatedAt = helper.TimeAddr(timeStamp)
 	messageEvent.UpdatedAt = helper.TimeAddr(timeStamp)
-	messageEvent.EventTime = helper.TimeAddr(timeStamp)
+	messageEvent.EventTime = timeStamp
 	err = store.CreateOne(datastore.MessagingEventCollection, messageEvent)
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			logger.Error("Unique constrain violates for content_config_store collection")
+			logger.Error("unique constrain violates for messaging_event collection")
 			helper.WriteErrorResponse(ctx, helper.ApiErrorWithCustomMessage(helper.ErrDuplicateKey, err.Error()))
 		} else {
-			logger.Error("Error persisting to database, err: %s", err.Error())
+			logger.Error("error persisting to database, err: %s", err.Error())
 			helper.WriteErrorResponse(ctx, helper.ApiErrorWithCustomMessage(helper.ErrDBInsert, err.Error()))
 		}
 		return

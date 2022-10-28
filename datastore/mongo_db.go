@@ -92,7 +92,18 @@ func (store *BillingApplicationDBStore) Find(collection string, document interfa
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
+func (store *BillingApplicationDBStore) Aggregate(collection string, document interface{}, query mongo.Pipeline) error {
+	c, err := store.db.Collection(collection).Aggregate(context.Background(), query)
+	if err != nil {
+		return err
+	}
+	err = c.All(context.Background(), document)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
