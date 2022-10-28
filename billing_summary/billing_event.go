@@ -4,6 +4,7 @@ import (
 	"github.com/anshumusaddi/billing_application/datastore"
 	"github.com/anshumusaddi/billing_application/helper"
 	"github.com/anshumusaddi/billing_application/logger"
+	"github.com/anshumusaddi/billing_application/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -47,7 +48,7 @@ func GetBillingSummary(ctx *gin.Context, store *datastore.BillingApplicationDBSt
 	}})
 	logger.Debug("group stage constructed : ", groupStage)
 	pipeline := mongo.Pipeline{matchStage, groupStage}
-	var aggregateInfo []bson.M
+	var aggregateInfo []models.SummaryInfo
 	err := store.Aggregate(datastore.MessagingEventCollection, &aggregateInfo, pipeline)
 	if err != nil {
 		logger.Error("error executing aggregation pipeline in database, err: %s", err.Error())
