@@ -45,6 +45,7 @@ func GetBillingSummary(ctx *gin.Context, store *datastore.BillingApplicationDBSt
 				{"$year", "$time"}}},
 		}},
 		{"total", bson.D{{"$sum", "$size"}}},
+		{"last_date", bson.D{{"$max", "$time"}}},
 	}})
 	logger.Debug("group stage constructed : ", groupStage)
 	pipeline := mongo.Pipeline{matchStage, groupStage}
