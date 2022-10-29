@@ -24,6 +24,7 @@ var (
 	ErrDuplicateKey                = NewAPIError(400, "BA1003", "E_DB_OPERATION", "key already exists, check if key is already present")
 	ErrInvalidQueryParams          = NewAPIError(400, "BA1004", "E_BAD_REQUEST", "invalid query params")
 	ErrDBOperation                 = NewAPIError(500, "BA1005", "E_DB_OPERATION", "failed to execute the query in database")
+	ErrKafkaInsert                 = NewAPIError(500, "BA1006", "E_KAFKA_INSERT", "error while inserting the document in kafka")
 )
 
 func ApiErrorWithCustomMessage(apiErr *APIError, message string) *APIError {

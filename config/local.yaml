@@ -6,3 +6,10 @@ DB:
 
 LOG:
   Level: debug
+
+KAFKA:
+  Host: localhost:9092
+
+MESSAGING_EVENT_WORKER:
+  Count: 2
+  Poll: true

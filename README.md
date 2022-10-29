@@ -3,11 +3,10 @@
 This project is a simple backend service that receives billing events from different sources. It saves the data in a MongoDB server.
 
 ## Deployment Instruction
-### Spinning Up MongoDB cluster
-We will fetch the latest MongoDB docker image and run it in a docker. It can be done with the following commands
+### Spinning Up Services cluster
+We will fetch the latest MongoDB, zookeeper and kafka docker image and run it in a docker. It can be done with the following commands
 ```shell
-docker pull mongo
-docker run -d -p 27017:27017 mongo
+docker docker compose up -d
 ```
 
 ### Running The Application

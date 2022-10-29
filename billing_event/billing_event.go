@@ -8,7 +8,6 @@ import (
 	"github.com/anshumusaddi/billing_application/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	"time"
 )
@@ -31,7 +30,7 @@ func GetBillingEvent(ctx *gin.Context, store *datastore.BillingApplicationDBStor
 	helper.WriteSuccessResponse(ctx, http.StatusOK, messagingEvents)
 }
 
-func PostBillingEvent(ctx *gin.Context, store *datastore.BillingApplicationDBStore) {
+func PostBillingEvent(ctx *gin.Context, store *datastore.BillingApplicationKafkaStore) {
 	messageEvent := &models.MessageEvent{}
 	err := ctx.ShouldBindJSON(&messageEvent)
 	if err != nil {
@@ -50,16 +49,10 @@ func PostBillingEvent(ctx *gin.Context, store *datastore.BillingApplicationDBSto
 	messageEvent.CreatedAt = helper.TimeAddr(timeStamp)
 	messageEvent.UpdatedAt = helper.TimeAddr(timeStamp)
 	messageEvent.EventTime = timeStamp
-	err = store.CreateOne(datastore.MessagingEventCollection, messageEvent)
+	err = store.ProduceEvent(datastore.MessagingEventTopic, messageEvent)
 	if err != nil {
-		if mongo.IsDuplicateKeyError(err) {
-			logger.Error("unique constrain violates for messaging_event collection")
-			helper.WriteErrorResponse(ctx, helper.ApiErrorWithCustomMessage(helper.ErrDuplicateKey, err.Error()))
-		} else {
-			logger.Error("error persisting to database, err: %s", err.Error())
-			helper.WriteErrorResponse(ctx, helper.ApiErrorWithCustomMessage(helper.ErrDBInsert, err.Error()))
-		}
-		return
+		logger.Error("error persisting to kafka, err: %s", err.Error())
+		helper.WriteErrorResponse(ctx, helper.ApiErrorWithCustomMessage(helper.ErrKafkaInsert, err.Error()))
 	}
 	helper.WriteSuccessResponse(ctx, http.StatusOK, messageEvent)
 	return

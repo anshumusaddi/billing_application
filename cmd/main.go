@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/anshumusaddi/billing_application/billing_event_worker"
 	"github.com/anshumusaddi/billing_application/config"
 	"github.com/anshumusaddi/billing_application/datastore"
 	"github.com/anshumusaddi/billing_application/logger"
@@ -24,7 +25,15 @@ func main() {
 	database := datastore.GetDb()
 	store := datastore.NewBillingApplicationDBStore(database)
 
-	engine := routes.InitRoutes(store)
+	producer, err := datastore.GetKafkaProducer()
+	if err != nil {
+		return
+	}
+	kafkaStore := datastore.NewBillingApplicationKafkaStore(producer)
+
+	billing_event_worker.InitEventWorkers(viper.GetInt("MESSAGING_EVENT_WORKER.Count"), store)
+
+	engine := routes.InitRoutes(store, kafkaStore)
 	err = engine.Run(":8080")
 	if err != nil {
 		return
