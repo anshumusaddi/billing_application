@@ -34,7 +34,7 @@ func (pool *WorkerPool) InitWorkers(workerID int) {
 	logger.Info("worker created for ID: " + string(rune(workerID)))
 	run := viper.GetBool("MESSAGING_EVENT_WORKER.Poll")
 	for run == true {
-		ev := consumer.Poll(100)
+		ev := consumer.Poll(1)
 		switch e := ev.(type) {
 		case *kafka.Message:
 			message := e.Value
@@ -42,8 +42,6 @@ func (pool *WorkerPool) InitWorkers(workerID int) {
 			err := json.Unmarshal(message, &messageEvent)
 			if err != nil {
 				logger.Error("kafka consumer failed to unmarshall data : ", err.Error())
-				run = false
-				return
 			}
 			logger.Debug("pushing the following event to db : ", messageEvent)
 			err = pool.store.CreateOne(datastore.MessagingEventCollection, messageEvent)
@@ -53,7 +51,6 @@ func (pool *WorkerPool) InitWorkers(workerID int) {
 				} else {
 					logger.Error("error persisting to database, err: %s", err.Error())
 				}
-				return
 			}
 		case kafka.Error:
 			logger.Error("kafka consumer failed to fetch data : ", err.Error())
