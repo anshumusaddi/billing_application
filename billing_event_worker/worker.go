@@ -34,7 +34,7 @@ func (pool *WorkerPool) InitWorkers(workerID int) {
 	logger.Info("worker created for ID: " + string(rune(workerID)))
 	run := viper.GetBool("MESSAGING_EVENT_WORKER.Poll")
 	for run == true {
-		ev := consumer.Poll(1)
+		ev := consumer.Poll(1000)
 		switch e := ev.(type) {
 		case *kafka.Message:
 			message := e.Value
