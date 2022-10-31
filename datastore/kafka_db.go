@@ -91,8 +91,8 @@ func createMessagingEventTopics() error {
 	}
 	_, err = adminClient.CreateTopics(context.Background(), []kafka.TopicSpecification{{
 		Topic:             MessagingEventTopic,
-		NumPartitions:     1,
-		ReplicationFactor: 1}},
+		NumPartitions:     10,
+		ReplicationFactor: 3}},
 	)
 	if err != nil {
 		logger.Error("unable to create topic in kafka. err:", err.Error())
