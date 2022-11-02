@@ -33,7 +33,7 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-    &quot;customer_id&quot;: &quot;load_test_6_${__threadNum}&quot;,&#xd;
+    &quot;customer_id&quot;: &quot;load_test_1_${__threadNum}&quot;,&#xd;
     &quot;size&quot;: 11&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -168,7 +168,7 @@
           <hashTree/>
         </hashTree>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Random Timer" enabled="true">
-          <stringProp name="ConstantTimer.delay">0</stringProp>
+          <stringProp name="ConstantTimer.delay">2.0</stringProp>
           <stringProp name="RandomTimer.range">5.0</stringProp>
         </UniformRandomTimer>
         <hashTree/>
